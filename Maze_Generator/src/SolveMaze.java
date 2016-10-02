@@ -191,7 +191,7 @@ public class SolveMaze {
 				{
 					System.out.print("!   ");
 				}
-				else if(j-1 < 0 && i-1 >= 0 && resultset.contains(new SimpleEntry<Integer,Integer>(i,j)))
+				else if(j-1 < 0 && i-1 > 0 && resultset.contains(new SimpleEntry<Integer,Integer>(i,j)))
 				{
 					System.out.print("! # ");
 				}
@@ -199,7 +199,7 @@ public class SolveMaze {
 				{
 					System.out.print("!   ");
 				}
-				else if(west[i][j] == 1 && !resultset.contains(new SimpleEntry<Integer,Integer>(i,j)))
+				else if(west[i][j] == 1 && resultset.contains(new SimpleEntry<Integer,Integer>(i,j)))
 				{
 					System.out.print("! # ");
 				}
