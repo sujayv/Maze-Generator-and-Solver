@@ -4,12 +4,16 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 public class GenerateMaze {
 	
+	//Global integer arrays holding values 0 or 1 indicating if the wall in that particular direction w.r.t a cell exists or not.
 	private int north[][];
 	private int south[][];
 	private int west[][];
 	private int east[][];
+	
+	//Global integer array indicating if a cell has been visited or not
 	private int visited[][];
 	
+	//Constructor that calls the create method to start generating the maze
 	GenerateMaze() throws IOException
 	{
 		create();
@@ -43,6 +47,7 @@ public class GenerateMaze {
 		drawMaze(dimension);
 	}
 	
+	//Method which utilizes DFS to generate the maze
 	private void visitCells(int row, int column, int dimension)
 	{
 		Set<Entry<Integer, Integer>> cells = new HashSet<>();
@@ -88,7 +93,6 @@ public class GenerateMaze {
 					row = row - 1;
 				}
 				cells.remove(new SimpleEntry<Integer,Integer>(row,column));
-				//System.out.println("Now it does not contain"+cells.contains(new SimpleEntry<Integer,Integer>(row,column)));
 				if(visited[row][column] != 1)
 				{
 					if(choice == 0)
@@ -117,6 +121,7 @@ public class GenerateMaze {
 		}
 	}
 	
+	//Method which will print the maze using '~' and '!'  for walls and spaces for paths through which we can move
 	private void drawMaze(int dimension)
 	{
 		System.out.println();

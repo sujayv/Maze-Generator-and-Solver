@@ -12,15 +12,23 @@ public class SolveMaze {
 	int[][] south;
 	int[][] west;
 	int[][] east;
+	
+	//Global integer array indicating if a cell has been visited or not
 	int[][] visited;
+	
+	//The dimension of the array retrieved from the GenerateMaze class
 	int dimension;
-	int path[];
+	
+	//ResultSet that contains (x,y) value pairs of the cells that form the final path
 	Set<Entry<Integer, Integer>> resultset = new HashSet<>();
 	
+	//Constructor that calls solve to solve the maze generated from GenerateMaze.java
 	SolveMaze() throws IOException
 	{
 		solve();
 	}
+	
+	//Solve using DFS approach
 	private void solve() throws IOException
 	{
 		GenerateMaze maze = new GenerateMaze();
@@ -39,31 +47,17 @@ public class SolveMaze {
 		resultset.add(new SimpleEntry<Integer,Integer>(0,0));
 		printPath(row,column);
 		System.out.println();
-		/*for(int i=0;i<dimension;i++)
-		{
-			for(int j=0;j<dimension;j++)
-			{
-				if(resultset.contains(new SimpleEntry<Integer,Integer>(i,j)))
-				{
-					System.out.print("("+i+","+j+")");
-				}
-				else
-					System.out.print("####");
-			}
-			System.out.println();
-		}*/
 	}
 
+	//Method to find path using DFS
 	private Entry<Integer,Integer> findPath(int row,int column,int prevrow,int prevcolumn)
 	{
 		Set<Entry<Integer, Integer>> cells = new HashSet<>();
 		visited = new int[dimension][dimension];
-		visited[prevrow][prevcolumn] = 1;
+		visited[prevrow][prevcolumn] = 1;	//Ensuring that we do not consider the cell that we arrived from as a possible neighbor to visit again
 		int temprow = prevrow;
 		int tempcolumn = prevcolumn;
 		visited[row][column] = 1;
-		//System.out.println("Original cell is "+prevrow+" "+prevcolumn);
-		//System.out.println("Visiting "+row+" "+column);
 		prevrow = row;
 		prevcolumn = column;
 		if(column+1 < dimension)
@@ -91,11 +85,6 @@ public class SolveMaze {
 		{
 			visited[temprow][tempcolumn] = 1;
 			Iterator<Entry<Integer,Integer>> it = cells.iterator();
-			/*while(it.hasNext())
-			{
-				Entry<Integer,Integer> entry = it.next();
-				System.out.println(entry.getKey()+" "+entry.getValue());
-			}*/
 			int choice;
 			while(true)
 			{
@@ -118,45 +107,37 @@ public class SolveMaze {
 				}
 				if(cells.contains(new SimpleEntry<Integer,Integer>(row,column)))
 				{
-					//System.out.println("Picked the neighbour "+row+" "+column);
 					break;
 				}
 			}
-			//if(neighbours[row][column][choice] != 1)
-			//{
-				//neighbours[row][column][choice] = 1;
-				cells.remove(new SimpleEntry<Integer,Integer>(row,column));
-				if(visited[row][column] != 1 && !(row == dimension-1 && column == dimension-1))
+			cells.remove(new SimpleEntry<Integer,Integer>(row,column));
+			if(visited[row][column] != 1 && !(row == dimension-1 && column == dimension-1))
+			{
+				visited[row][column] = 1;
+				Entry<Integer,Integer> result = findPath(row,column,prevrow,prevcolumn);
+				if(result.getKey() != -1)
 				{
-					visited[row][column] = 1;
-					Entry<Integer,Integer> result = findPath(row,column,prevrow,prevcolumn);
-					//if(result != null)
-					//{
-					if(result.getKey() != -1)
-					{
-						//System.out.println(result.getKey()+" "+result.getValue());
-						resultset.add(result);
-						Entry<Integer,Integer> result1 = new SimpleEntry<Integer,Integer>(row,column);
-						//resultset.add(result1);
-						return result1;
-					}
-					else
-					{
-						//System.out.println("Did not reach Returned null");
-						//return null;
-					}
+					resultset.add(result);
+					Entry<Integer,Integer> result1 = new SimpleEntry<Integer,Integer>(row,column);
+					return result1;
 				}
-				else if(visited[row][column] != 1 && row == dimension-1 && column == dimension-1)
+				else
 				{
-					visited[row][column] = 1;
-					Entry<Integer,Integer> result = new SimpleEntry<Integer,Integer>(row,column);
-					return result;
+					//System.out.println("Did not reach Returned null");
+					//return null;
 				}
+			}
+			else if(visited[row][column] != 1 && row == dimension-1 && column == dimension-1)
+			{
+				visited[row][column] = 1;
+				Entry<Integer,Integer> result = new SimpleEntry<Integer,Integer>(row,column);
+				return result;
+			}
 		}
-		//}
 		return new SimpleEntry<Integer,Integer>(-1,-1);
 	}
 	
+	//Method to print the path - '~' and '!' stand for walls and '#' stands for the path taken to reach the destination
 	private void printPath(int row, int column)
 	{
 		System.out.println();
